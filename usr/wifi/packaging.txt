@@ -1,0 +1,36 @@
+File: usr/wifi/packaging.txt
+Package: wifi
+Author: bgstack15
+Startdate: 2016-11-03
+Title: Packaging instructions for wifi
+Purpose: To make it easier to build the package
+History:
+Usage:
+Reference: bgscripts packaging.txt
+   GrapefruiTgirl from http://www.linuxquestions.org/questions/linux-newbie-8/sed-awk-remove-section-from-file-840513/
+   https://fedoraproject.org/wiki/Packaging:Python?rd=Packaging/Python#Byte_Compiled_Files
+Improve:
+Document: Below this line
+
+### PACKAGING for rhel/centos/fedora
+package=wifi
+version=0.1-1
+shortversion=0.1
+rpmbuilddir=~/rpmbuild/
+packagespecfile="${package}-${version}/usr/${package}/docs/${package}.spec"
+#awk '{ if ($0 ~ /\%changelog|\%files/){output="off"; next}; if($0 ~ /\%/){output="on"; print;next;} if(output == "on"){print;};}' "${rpmbuilddir}/SOURCES/${packagespecfile}" > "${rpmbuilddir}/SOURCES/${packagespecfile}.swp" #remove files and changelog
+sed -n -e '1,/^\%files/p;' "${rpmbuilddir}/SOURCES/${packagespecfile}" > "${rpmbuilddir}/SOURCES/${packagespecfile}.swp" #remove files and changelog
+cd "${rpmbuilddir}/SOURCES/${package}-${version}/usr/bin"
+ln -sf ../wifi/wifi.py wifi
+cd "${rpmbuilddir}/SOURCES/${package}-${version}"
+find * ! -type d ! -regex '.*?.swp' ! -regex '.*?DEBIAN.*?' | sed -e 's/^/\//;s/\(.*\.txt\)/%doc %attr(444, -, -) \1/;' -e 's/\(.*bin.*\)/%verify(link) \1/;' -e 's/\(.*\.wifi\)/%config \1/;' >> "${rpmbuilddir}/SOURCES/${packagespecfile}.swp"
+printf "\n" >> "${rpmbuilddir}/SOURCES/${packagespecfile}.swp"
+sed -n -e '/^\%changelog/,$p' "${rpmbuilddir}/SOURCES/${packagespecfile}" >> "${rpmbuilddir}/SOURCES/${packagespecfile}.swp"
+mv -f "${rpmbuilddir}/SOURCES/${packagespecfile}.swp" "${rpmbuilddir}/SOURCES/${packagespecfile}"
+rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}"; /bin/cp -prf "${rpmbuilddir}/SOURCES/${package}-${version}" "${rpmbuilddir}/SOURCES/${package}-${shortversion}"
+rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/DEBIAN"
+cd "${rpmbuilddir}/SOURCES"
+rm -rf "${package}.tgz"; tar -zc --exclude='.git' -f "${package}.tgz" "${package}-${shortversion}"
+/bin/cp -pf "${rpmbuilddir}/SOURCES/${packagespecfile}" "${rpmbuilddir}/SPECS"
+cd "${rpmbuilddir}/RPMS/noarch"
+rpmbuild -bb "${rpmbuilddir}/SPECS/${package}.spec"

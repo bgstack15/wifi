@@ -1,0 +1,14 @@
+# File: Example-Campus.wifi
+# Purpose: Information to set up nmcli to connect to the EXAMPLE wireless network
+type		wifi
+ifname		$WNIC
+con-name	Example-Campus
+ssid		Example-Campus
+ipv4.method	auto
+802-1x.eap	peap
+802-1x.phase2-auth	mschapv2
+802-1x.identity		file:///etc/mount/.bgstack15.example.com
+802-1x.password		file:///etc/mount/.bgstack15.example.com
+802-11-wireless-security.key-mgmt	wpa-eap
+802-11-wireless-security.wep-tx-keyidx	0
+802-11-wireless-security.auth-alg	open
