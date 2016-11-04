@@ -36,11 +36,12 @@ rm -rf %{buildroot}
 
 %files
 /README.md
+/usr/wifi/inc/scrub.py
+%doc %attr(444, -, -) /usr/wifi/inc/scrub.txt
+/usr/wifi/inc/localize_git.sh
 %config /usr/wifi/networks/sample.wifi
 %config /usr/wifi/networks/campus.wifi
 %doc %attr(444, -, -) /usr/wifi/packaging.txt
-/usr/wifi/docs/wifi.spec.2
-/usr/wifi/docs/wifi.spec.1
 /usr/wifi/docs/nmcli.md
 /usr/wifi/docs/wifi.spec
 /usr/wifi/docs/wnic.md

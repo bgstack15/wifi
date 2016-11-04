@@ -15,9 +15,9 @@
 #    specify connection name or filename
 #    provide --verbose flag
 
-import re, subprocess
+import re, subprocess, argparse, os
 
-wifipyversion = "2016-11-03b"
+wifipyversion = "2016-11-04a"
 
 # DEFINE FUNCTIONS
 def _run_command(command):
@@ -51,16 +51,34 @@ def getvaluefromfile(filename, searchstring):
             thisvalue = re.sub("^" + searchstring + "=", "", line)
          
    except Exception as e:
-      print("Fatal error opening file: " + filename)
+      print("Fatal error opening file: " + filename + ". Aborted.")
       quit()
 
    return thisvalue
 
-# SAMPLE VARIABLES
+# INITIALIZE VARIABLES
 configfile = "/home/bgstack15-local/software/wifi/campus.wifi"
 conname = "" # gets con-name
 nmcli_con_add = [] # gets type, ifname, con-name, ssid
 nmcli_con_mod = [] # gets everything else
+
+# PARSE PARAMETERS
+parser = argparse.ArgumentParser(description="Loads wifi settings from a file.")
+parser.add_argument("-q", "--quiet", help="suppresses output", action="store_true",default=False)
+parser.add_argument("filename", help="Connection file. Usually ends in .wifi")
+parser.add_argument("-V","--version", action="version", version="%(prog)s " + wifipyversion)
+
+args = parser.parse_args()
+bequiet = args.quiet
+configfile = args.filename
+
+try:
+   with open(configfile,'r') as fp:
+      foo=0
+
+except Exception as e:
+   print("Fatal error opening file " + configfile + ". Aborted.")
+   quit()
 
 # PARSE CONFIG FILE
 for line in open(configfile):
@@ -98,14 +116,14 @@ if False:
 
 # DELETE EXISTING CONNAME if exists
 nmcondel = "nmcli con del " + conname
-print(nmcondel)
+if not bequiet: print(nmcondel)
 run_command(nmcondel)
 
 # EXECUTE NMCLI CON ADD
 nmconadd = "nmcli con add"
 for thisstring in nmcli_con_add:
    nmconadd = nmconadd + " " + thisstring
-print(nmconadd)
+if not bequiet: print(nmconadd)
 run_command(nmconadd)
 
 # EXECUTE NMCLI CON MODIFY
@@ -114,10 +132,10 @@ nmconmodprint = "nmcli con modify " + conname
 for thisstring in nmcli_con_mod:
    nmconmod = nmconmod + " " + thisstring
    nmconmodprint = nmconmodprint + " " + re.sub("(password ).*","\\1REDACTED", thisstring)
-print(nmconmodprint)
+if not bequiet: print(nmconmodprint)
 run_command(nmconmod)
 
 # EXECUTE NMCLI CON UP
 nmconup = "nmcli con up " + conname
-print(nmconup)
+if not bequiet: print(nmconup)
 run_command(nmconup)

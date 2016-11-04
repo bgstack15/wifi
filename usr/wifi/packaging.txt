@@ -34,3 +34,10 @@ rm -rf "${package}.tgz"; tar -zc --exclude='.git' -f "${package}.tgz" "${package
 /bin/cp -pf "${rpmbuilddir}/SOURCES/${packagespecfile}" "${rpmbuilddir}/SPECS"
 cd "${rpmbuilddir}/RPMS/noarch"
 rpmbuild -bb "${rpmbuilddir}/SPECS/${package}.spec"
+
+### PACKAGING in a master.tgz
+package=wifi
+version=0.1-1
+cd ~/deb 2>/dev/null || cd ~/rpmbuild/SOURCES
+rm -rf "./${package}-${version}.master.tgz"
+tar -zcf "${package}-${version}.master.tgz" "${package}-${version}/"
