@@ -39,6 +39,7 @@ rm -rf %{buildroot}
 /usr/wifi/inc/scrub.py
 %doc %attr(444, -, -) /usr/wifi/inc/scrub.txt
 /usr/wifi/inc/localize_git.sh
+%config /usr/wifi/networks/home.wifi
 %config /usr/wifi/networks/sample.wifi
 %config /usr/wifi/networks/campus.wifi
 %doc %attr(444, -, -) /usr/wifi/packaging.txt

@@ -1,0 +1,11 @@
+# File: home.wifi
+type	802-11-wireless
+ifname	$WNIC
+con-name	homewifi
+ssid		homewifi
+ipv4.method	auto
+connection.autoconnect	yes
+802-11-wireless-security.key-mgmt	wpa-psk
+802-11-wireless-security.wep-tx-keyidx	0
+802-11-wireless-security.auth-alg	open
+802-11-wireless-security.psk		homepassword

@@ -12,3 +12,5 @@ EXAMPLE	EXAMPLE
 ".com"	".com"
 "203.0."		"203.0."
 one	one
+homewifi	homewifi
+homepassword	homepassword
